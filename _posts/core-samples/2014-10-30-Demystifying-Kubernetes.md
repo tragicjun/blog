@@ -69,15 +69,16 @@ slave(称作minion)运行两个组件：
 
 - 下载源代码自己编译：
 
-    `git clone https://github.com/GoogleCloudPlatform/kubernetes.git`
-    `cd kubernetes/build`
+
+    git clone https://github.com/GoogleCloudPlatform/kubernetes.git
+    cd kubernetes/build
     ./release.sh
-`
+
 - 直接下载人家已经编译打包好的tar文件：
 
-```bash
-wget https://storage.googleapis.com/kubernetes/binaries.tar.gz  
-```
+
+    wget https://storage.googleapis.com/kubernetes/binaries.tar.gz  
+
 
 自己编译源码需要先安装好golang，编译完之后在kubernetes/_output/release-tars文件夹下可以得到打包文件。直接下载的方式不需要安装其他软件，但可能得不到最新的版本。
 
