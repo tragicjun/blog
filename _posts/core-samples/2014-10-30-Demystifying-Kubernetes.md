@@ -247,3 +247,39 @@ redisController     dockerfile/redis    name=redis          1
 ```
 
 同时，1个pod也将被自动创建出来，即使我们故意删除该pod，replicationController也将保证创建1个新pod。
+
+####创建service
+
+首先编写service描述文件，保存为redisService.json：
+
+```json
+{
+  "kind": "Service",
+  "apiVersion": "v1beta1",
+  "id": "redis",
+  "port": 6379,
+  "labels": {
+     "name": "redis"
+  },
+  "selector": {
+     "name": "redis"
+  }
+}
+```
+
+然后，通过命令行工具kubecfg提交：
+
+```
+./kubecfg -c redisService.json create /services 
+```
+
+提交完后，通过kubecfg查看service状态：
+
+```
+# kubecfg list /services
+ID                  Labels              Selector            IP                  Port
+----------          ----------          ----------          ----------          ----------
+redis               name=redis          name=redis          172.0.0.1           6379
+```
+
+172.0.0.1:6379即是service的socket，在客户端pod中可以通过$REDIS_SERVICE_HOST:$REDIS_SERVICE_PORT环境变量来获取该地址。
