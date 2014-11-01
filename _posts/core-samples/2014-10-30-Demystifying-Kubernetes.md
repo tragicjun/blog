@@ -12,7 +12,7 @@ Kubernetes是Google开源的容器集群管理系统。它构建于docker技术�
 
 如下图所示是我初步阅读文档和源代码之后整理的总体概览，基本上可以从如下三个维度来认识Kubernetes。
 
-![Kubernetes概览](https://raw.githubusercontent.com/tragicjun/tragicjun.github.com/master/images/Kubernetes.png)
+![Kubernetes概览](https://raw.githubusercontent.com/tragicjun/tragicjunold.github.com/master/images/Kubernetes.png)
 
 ###操作对象
 
@@ -26,7 +26,7 @@ Kubernetes以RESTFul形式开放接口，用户可操作的REST对象有三个�
 
 可以看到，service和replicationController只是建立在pod之上的抽象，最终是要作用于pod的，那么它们如何跟pod联系起来呢？这就要引入label的概念：label其实很好理解，就是为pod加上可用于搜索或关联的一组key/value标签，而service和replicationController正是通过label来与pod关联的。如下图所示，有三个pod都有label为"app=backend"，创建service和replicationController时可以指定同样的label:"app=backend"，再通过label selector机制，就将它们与这三个pod关联起来了。例如，当有其他frontend pod访问该service时，自动会转发到其中的一个backend pod。
 
-![Kubernetes REST对象](https://raw.githubusercontent.com/tragicjun/tragicjun.github.com/master/images/restObjects.png)
+![Kubernetes REST对象](https://raw.githubusercontent.com/tragicjun/tragicjunold.github.com/master/images/restObjects.png)
 
 ###功能组件
 
@@ -54,7 +54,7 @@ slave(称作minion)运行两个组件：
 
 上文已经提到了Kubernetes中最基本的三个操作对象：pod, replicationController及service。 下面分别从它们的对象创建出发，通过时序图 来描述Kubernetes各个组件之间的交互及其工作流。
 
-![Kubernetes工作流](https://raw.githubusercontent.com/tragicjun/tragicjun.github.com/master/images/kubernetesWorkflow.png)
+![Kubernetes工作流](https://raw.githubusercontent.com/tragicjun/tragicjunold.github.com/master/images/kubernetesWorkflow.png)
 
 ###使用示例
 
