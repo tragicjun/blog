@@ -62,13 +62,14 @@ slave(称作minion)运行两个组件：
 
 ####搭建环境
 
+
+
     rm -rf _posts/core-samples
     $ddfd
     
 第一步，我们需要Kuberntes各组件的二进制可执行文件。有以下两种方式获取：
 
 - 下载源代码自己编译：
-
 
     git clone https://github.com/GoogleCloudPlatform/kubernetes.git
     cd kubernetes/build
