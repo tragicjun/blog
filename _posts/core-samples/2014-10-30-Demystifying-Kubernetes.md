@@ -65,7 +65,6 @@ In `_config.yml` remember to specify your own data:
     
     title : My Blog =)
     
-
 第一步，我们需要Kuberntes各组件的二进制可执行文件。有以下两种方式获取：
 
 - 下载源代码自己编译：
@@ -73,7 +72,7 @@ In `_config.yml` remember to specify your own data:
     git clone https://github.com/GoogleCloudPlatform/kubernetes.git  
     cd kubernetes/build  
     ./release.sh  
-
+    
 - 直接下载人家已经编译打包好的tar文件：
 
 ```bash
