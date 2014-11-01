@@ -66,11 +66,10 @@ slave(称作minion)运行两个组件：
 
 - 下载源代码自己编译：
 
-```
     git clone https://github.com/GoogleCloudPlatform/kubernetes.git  
     cd kubernetes/build  
     ./release.sh  
-```
+    
 
 - 直接下载人家已经编译打包好的tar文件：
 
