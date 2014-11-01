@@ -66,9 +66,11 @@ slave(称作minion)运行两个组件：
 
 - 下载源代码自己编译：
 
-```bash
+```
 git clone https://github.com/GoogleCloudPlatform/kubernetes.git  
+
 cd kubernetes/build  
+
 ./release.sh  
 ```
 
