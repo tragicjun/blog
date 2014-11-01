@@ -61,15 +61,23 @@ slave(称作minion)运行两个组件：
 最后，让我们进入实战模式，这里跑一个最简单的单机示例(所有组件运行在一台机器上)，旨在打通基本流程。
 
 ####搭建环境
+In `_config.yml` remember to specify your own data:
+    
+    title : My Blog =)
+    
+    author :
+      name : Name Lastname
+      email : blah@email.test
+      github : username
+      twitter : username
 
 第一步，我们需要Kuberntes各组件的二进制可执行文件。有以下两种方式获取：
 
 - 下载源代码自己编译：
-
+    
     git clone https://github.com/GoogleCloudPlatform/kubernetes.git  
     cd kubernetes/build  
     ./release.sh  
-    
 
 - 直接下载人家已经编译打包好的tar文件：
 
