@@ -65,11 +65,6 @@ In `_config.yml` remember to specify your own data:
     
     title : My Blog =)
     
-    author :
-      name : Name Lastname
-      email : blah@email.test
-      github : username
-      twitter : username
 
 第一步，我们需要Kuberntes各组件的二进制可执行文件。有以下两种方式获取：
 
