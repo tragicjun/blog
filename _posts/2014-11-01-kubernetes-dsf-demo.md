@@ -32,3 +32,8 @@ RUN rm -r /tmp/mavenRepository
 EXPOSE 19800
 ENTRYPOINT ["/root/dse-1.0.3/bin/start.sh"]
 ```
+
+```
+docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse-routercenter:1.0
+curl -d 'm=queryRoute&p=[{"business":"portaldemo","service":"HelloWorld"}]' localhost:19800/routercenter/RouterCenterService
+```
