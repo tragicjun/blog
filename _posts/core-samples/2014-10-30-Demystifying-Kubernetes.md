@@ -140,6 +140,8 @@ kubelet
 -log_dir=./log  
 ```
 
+proxy
+
 ```bash
 ./proxy \
 -etcd_servers=http://127.0.0.1:4001 \
