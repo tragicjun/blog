@@ -71,7 +71,7 @@ In `_config.yml` remember to specify your own data:
     
     git clone https://github.com/GoogleCloudPlatform/kubernetes.git  
     cd kubernetes/build  
-    ./release.sh  
+    ./release.sh
     
 - 直接下载人家已经编译打包好的tar文件：
 
