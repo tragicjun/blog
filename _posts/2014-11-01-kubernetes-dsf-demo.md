@@ -1,3 +1,9 @@
+---
+layout: post
+title: DSF容器化
+published: true
+---
+
 **Build image for dse**
 
 Dockerfile
