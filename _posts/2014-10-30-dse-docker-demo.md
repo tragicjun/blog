@@ -44,3 +44,9 @@ Build command
 ```bash
 docker build -t tegdsf/dse-demo --no-cache-true . 
 ```
+
+Start command
+
+```bash
+docker run -d -p 10.6.207.228:19800:19800 -e DSE_DOCKER_HOST=10.6.207.228 -e DSE_DOCKER_PORT=19800 tegdsf/dse-demo
+```
