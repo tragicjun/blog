@@ -1,8 +1,9 @@
 ---
 layout: post
-title: 服务容器化的实践分享
+title: 服务docker容器化的实践
 published: true
 ---
+
 
 **Build image for dse**
 
@@ -36,7 +37,6 @@ RUN mkdir /root/dse-1.0.3/apps/demo
 RUN mv WEB-INF /root/dse-1.0.3/apps/demo
 RUN rm -r /root/dse-service-demo
 RUN rm -r /tmp/mavenRepository
-
 ```
 
 ```
