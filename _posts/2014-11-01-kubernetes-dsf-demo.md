@@ -56,19 +56,22 @@ DSF的另一个核心系统是软负载(详细介绍可以参考wiki链接http:/
 ### tegdsf/centos在base centos镜像之上安装了jdk, maven及svn
 FROM tegdsf/centos
 ### 通过svn获取服务引擎代码
-RUN svn checkout http://tc-svn.tencent.com/doss/doss_openapi_rep/openapi_proj/trunk/commons/DSE /root/dse-trunk
+RUN svn checkout http://tc-svn.tencent.com/doss/doss_openapi_rep/openapi_proj/branches/commons/DSE/docker_1.0 /root/dse-docker
 ### 通过maven编译打包
-RUN cd /root/dse-trunk; mvn package
-RUN rm /root/dse-trunk/release/*.tar
-RUN mv /root/dse-trunk/release/dse-* /root
+RUN cd /root/dse-docker; mvn package
+### 将部署包拷贝到特定文件夹
+RUN rm /root/dse-docker/release/*.tar
+RUN mkdir /root/dse-latest
+RUN mv /root/dse-docker/release/dse-*/* /root/dse-latest/
+### 对启动/停止脚本设置可执行权限
 RUN chmod +x /root/dse-*/bin/start.sh
 RUN chmod +x /root/dse-*/bin/kill.sh
-RUN rm -r /root/dse-trunk
+RUN rm -r /root/dse-docker
 RUN rm -r /tmp/mavenRepository
 ### 服务引擎默认监听19800端口
 EXPOSE 19800
 ### start.sh是服务引擎的启动脚本
-ENTRYPOINT ["/root/dse-1.0.3/bin/start.sh"]
+ENTRYPOINT /root/dse-latest/bin/start.sh
 ```
 
 然后通过docker build命令来构建：
