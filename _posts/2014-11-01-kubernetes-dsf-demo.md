@@ -1,9 +1,10 @@
 ---
 layout: post
-title: 服务docker容器化的实践
+title: 【分布式服务框架DSF演进系列-2】服务docker容器化的实践
 published: true
 ---
 
+本系列文章《基于Docker容器和资源调度的探索及平台规划》一文已经对分布式服务框架DSF的演进动机及思路做了详细地讨论，
 
 **Build image for dse**
 
