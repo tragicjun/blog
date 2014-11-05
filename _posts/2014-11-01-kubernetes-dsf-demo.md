@@ -10,13 +10,31 @@ published: true
 DSF中的核心系统是服务引擎(Data Service Engine，简称DSE)，是一个服务运行容器，提供统一化的通讯协议与调用接口，支持RPC和Servlet协议。简单来说，DSE降低了分布式服务的开发成本，使得开发人员只专注于业务逻辑，无需考虑通讯协议、容灾、负载均衡等通用逻辑。
 
 ###服务引擎的容器化改造
-天下没有免费的午餐，要把原本跑在物理机或虚拟机上的应用程序迁移到docker容器里，都需要做一定的改造，"The Twelve Factors"对此做了很系统地总结。
+天下没有免费的午餐，要把原本跑在物理机或虚拟机上的应用程序迁移到docker容器里，都需要做一定的改造，"The Twelve Factors"对此做了很系统地总结。下面从网络配置、启动脚本及引擎日志三个方面记录一下我们对DSE所做的改造：
 
-**网络地址**
+**网络配置**
+DSE启动后需要打开一个NIO服务器来接受调用请求，其监听的IP和port是通过一个server.conf文件来配置。假如DSE部署在一台IP为10.136.4.88的机器上，需要做如下配置：
+
+```
+#DSE Main TCP Host
+taserver.host=10.136.4.88
+#DSE Main TCP Port
+taserver.port=19800
+```
+
+然而，假如DSE运行在docker容器里，这样的配置是无法生效的，因为容器被分配了虚拟的网络接口。
+
+```
+#DSE Main TCP Host
+taserver.host=0.0.0.0
+#DSE Main TCP Port
+taserver.port=19800
+```
 
 **启动脚本**
 
 **引擎日志**
+
 
 ###Docker镜像制作
 **Build image for dse**
