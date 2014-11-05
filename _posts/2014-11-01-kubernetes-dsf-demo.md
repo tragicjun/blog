@@ -9,11 +9,11 @@ published: true
 Dockerfile
 
 ```text
-#tegdsf/centos在base centos镜像之上安装了jdk, maven及svn
+### tegdsf/centos在base centos镜像之上安装了jdk, maven及svn
 FROM tegdsf/centos
-#通过svn获取服务引擎代码
+### 通过svn获取服务引擎代码
 RUN svn checkout http://tc-svn.tencent.com/doss/doss_openapi_rep/openapi_proj/trunk/commons/DSE /root/dse-trunk
-#通过maven编译打包
+### 通过maven编译打包
 RUN cd /root/dse-trunk; mvn package
 RUN rm /root/dse-trunk/release/*.tar
 RUN mv /root/dse-trunk/release/dse-* /root
@@ -21,8 +21,9 @@ RUN chmod +x /root/dse-*/bin/start.sh
 RUN chmod +x /root/dse-*/bin/kill.sh
 RUN rm -r /root/dse-trunk
 RUN rm -r /tmp/mavenRepository
+### 服务引擎默认监听19800端口
 EXPOSE 19800
-#start.sh是服务引擎的启动脚本
+### start.sh是服务引擎的启动脚本
 ENTRYPOINT ["/root/dse-1.0.3/bin/start.sh"]
 ```
 
