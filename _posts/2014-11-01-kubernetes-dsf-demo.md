@@ -36,7 +36,7 @@ taserver.port=19800
 
 **启动脚本**
 
-DSE原本的启动脚本是以后台程序来启动的，这里需要改成前台程序，因为如果没有前台程序，docker容器会立即退出。
+DSE的启动脚本是以后台程序来启动的，这里需要改成前台程序，因为如果没有前台程序，docker容器会立即退出。
 
 **引擎日志**
 
@@ -44,7 +44,7 @@ DSE的系统日志是通过log4j写入特定文件中，这里需要改成写入
 
 **心跳上报**
 
-
+DSF的另一个核心系统是软负载(详细介绍可以参考wiki链接http://dsfwiki.oa.com/DSF/Wiki.jsp?page=RouterCenter%20Intro)，提供服务发现、路由寻址功能，它要求DSE定期上报心跳，汇报托管在DSE之上的服务的地址信息及其运行状态。原本心跳上报模块是通过从server.conf文件中读取到的IP和port来拼接服务地址的，但如前文所述，server.conf文件中的IP已经修改成了0.0.0.0，显然不能上报这样的IP。
 
 ###Docker镜像制作
 **Build image for dse**
