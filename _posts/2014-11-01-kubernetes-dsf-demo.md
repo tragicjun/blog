@@ -48,10 +48,9 @@ DSF的另一个核心系统是软负载(详细介绍可以参考wiki链接http:/
 
 由于目前还没有很好的方式在docker容器里获取其宿主机的IP，我们采取的临时方案是：在docker启动容器时，通过环境变量将宿主机的IP及该容器映射的宿主机port注入容器。
 
-###Docker镜像制作
-**Build image for dse**
+###服务引擎的Docker镜像制作
 
-Dockerfile
+在对DSE进行简单的改造后，就可以来制作docker镜像了，首先是编写Dockerfile，内容如下：
 
 ```text
 ### tegdsf/centos在base centos镜像之上安装了jdk, maven及svn
@@ -72,10 +71,22 @@ EXPOSE 19800
 ENTRYPOINT ["/root/dse-1.0.3/bin/start.sh"]
 ```
 
+然后通过docker build命令来构建：
+```bash
+docker build -t tegdsf/dse .
 ```
-docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse-routercenter:1.0
-curl -d 'm=queryRoute&p=[{"business":"portaldemo","service":"HelloWorld"}]' localhost:19800/routercenter/RouterCenterService
+
+最后，可以对构建好的镜像做简单的测试：
+```bash
+# docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse
+4c55f2081eac
+# curl localhost:19800/internal/heartbeat.jsp
+<html>
+Heartbeat Page.
+</html>
 ```
+
+测试通过后，我们可以把镜像push到远程仓库，这里推荐数平gaia团队搭建的私有仓库docker.oa.com:8080(详细介绍参考链接http://km.oa.com/group/docker/articles/show/205373 )。
 
 ###自动化部署
 
