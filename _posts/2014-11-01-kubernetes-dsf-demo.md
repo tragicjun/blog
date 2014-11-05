@@ -77,7 +77,7 @@ docker build -t tegdsf/dse .
 ```
 
 最后，可以对构建好的镜像做简单的测试：
-```bash
+```
 # docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse
 4c55f2081eac
 # curl localhost:19800/internal/heartbeat.jsp
