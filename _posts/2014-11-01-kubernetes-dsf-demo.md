@@ -46,6 +46,8 @@ DSE的系统日志是通过log4j写入特定文件中，这里需要改成写入
 
 DSF的另一个核心系统是软负载(详细介绍可以参考wiki链接http://dsfwiki.oa.com/DSF/Wiki.jsp?page=RouterCenter%20Intro)，提供服务发现、路由寻址功能，它要求DSE定期上报心跳，汇报托管在DSE之上的服务的地址信息及其运行状态。原本心跳上报模块是通过从server.conf文件中读取到的IP和port来拼接服务地址的，但如前文所述，server.conf文件中的IP已经修改成了0.0.0.0，显然不能上报这样的IP。
 
+由于目前还没有很好的方式在docker容器里获取其宿主机的IP，我们采取的临时方案是：在docker启动容器时，通过环境变量将宿主机的IP及该容器映射的宿主机port注入容器。
+
 ###Docker镜像制作
 **Build image for dse**
 
@@ -68,17 +70,6 @@ RUN rm -r /tmp/mavenRepository
 EXPOSE 19800
 ### start.sh是服务引擎的启动脚本
 ENTRYPOINT ["/root/dse-1.0.3/bin/start.sh"]
-```
-
-**Build image for dse service**
-```text
-FROM tegdsf/dse:1.0.3
-RUN svn checkout http://tc-svn.tencent.com/doss/doss_openapi_rep/openapi_proj/trunk/service/dse-service-demo /root/dse-service-demo
-RUN cd /root/dse-service-demo; mvn compile
-RUN mkdir /root/dse-1.0.3/apps/demo
-RUN mv WEB-INF /root/dse-1.0.3/apps/demo
-RUN rm -r /root/dse-service-demo
-RUN rm -r /tmp/mavenRepository
 ```
 
 ```
