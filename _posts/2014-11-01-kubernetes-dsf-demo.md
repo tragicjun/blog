@@ -9,10 +9,10 @@ published: true
 ###什么是服务引擎
 DSF中的核心系统是服务引擎(Data Service Engine，简称DSE)，是一个服务运行容器，提供统一化的通讯协议与调用接口，支持RPC和Servlet协议。简单来说，DSE降低了分布式服务的开发成本，使得开发人员只专注于业务逻辑，无需考虑通讯协议、容灾、负载均衡等通用逻辑。
 
-###服务引擎的改造
+###服务引擎的容器化改造
 
 
-
+###Docker镜像制作
 **Build image for dse**
 
 Dockerfile
@@ -51,3 +51,10 @@ RUN rm -r /tmp/mavenRepository
 docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse-routercenter:1.0
 curl -d 'm=queryRoute&p=[{"business":"portaldemo","service":"HelloWorld"}]' localhost:19800/routercenter/RouterCenterService
 ```
+
+###自动化部署
+
+
+###
+
+
