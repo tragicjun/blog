@@ -160,3 +160,13 @@ CONTAINER ID        IMAGE                     COMMAND                CREATED    
 37fab78246e0        tegdsf/dse:latest         "/bin/sh -c /root/ds   3 minutes ago       Up 3 minutes                                   k8s_dse-demo.4314872b_9a646fb6-6557-11e4-b410-001f290cf88c.default.etcd_1415238765_7e8d8da7   
 8f91f09d6d4e        kubernetes-pause:latest   "/pause"               3 minutes ago       Up 3 minutes        0.0.0.0:19800->19800/tcp   k8s_net.40d9846a_9a646fb6-6557-11e4-b410-001f290cf88c.default.etcd_1415238765_751ba7fd       
 ```
+
+###后续工作
+
+经过前文所述的工作，我们已经把服务框架DSF的服务引擎DSE容器化，并试验了自动部署的方案。但是，真正要应用于生产环境，还有不少工作要做，这里提两点方向：
+
+####服务发现
+
+
+
+####日志收集
