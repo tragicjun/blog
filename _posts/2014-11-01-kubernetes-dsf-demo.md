@@ -93,7 +93,70 @@ Heartbeat Page.
 
 ###自动部署
 
-本系列前文《基于Docker容器和资源调度的探索及平台规划》详细描述了我们结合Gaia系统来做资源调度和自动部署的方案，这里
+本系列前文《基于Docker容器和资源调度的探索及平台规划》详细描述了我们结合Gaia系统来做资源调度和自动部署的方案，这里分享一下另一种基于Kubernetes的方案。Kubernetes是Google开源的容器集群管理系统。它构建于docker技术之上，为容器化的应用提供资源调度、部署运行、服务发现、扩容缩容等整一套功能，本质上可看作是基于容器技术的mini-PaaS平台。具体的原理介绍和实践操作可以参考文章http://km.oa.com/group/597/articles/show/205884。
 
+首先，我们搭建了由两台机器组成的Kubernetes集群，一台机器既做master也做slave，通过命令行工具查看slave(称为minion)如下：
 
+```
+$ kubecfg -h 10.6.207.17 list /minions
+Minion identifier
+----------
+10.6.207.17
+10.6.207.228
+```
 
+接下来，我们通过Kubernetes的replicationController对象来部署多个服务实例，编写json描述文件如下：
+
+```json
+{
+  "id": "dse-demo",
+  "apiVersion": "v1beta1",
+  "kind": "ReplicationController",
+  "desiredState": {
+    "replicas": 2,
+    "replicaSelector": {"name": "dse-demo"},
+    "podTemplate": {
+      "desiredState": {
+         "manifest": {
+           "version": "v1beta1",
+           "id": "dse-demo",
+           "containers": [{
+             "name": "dse-demo",
+             "image": "tegdsf/dse",
+              "imagePullPolicy": "PullIfNotPresent",
+             "ports": [{"containerPort": 19800, "hostPort": 19800}]
+           }]
+         }
+       },
+       "labels": {"name": "dse-demo"}
+      }},
+  "labels": {"name": "dse-demo"}
+}
+```
+
+可以看到，通过"replicas"字段可以指定服务实例的个数。最后，用命令行工具提交描述文件：
+
+```
+$ kubecfg -h 10.6.207.17 -c dseController.json create /replicationControllers
+ID                  Image(s)            Selector            Replicas
+----------          ----------          ----------          ----------
+dse-demo            tegdsf/dse          name=dse-demo       2
+```
+
+可以看到2个实例已经部署成功，并处于"Running"状态：
+
+```
+$ kubecfg -h 10.6.207.17 list /pods
+ID                                     Image(s)            Host                Labels                                         Status
+----------                             ----------          ----------          ----------                                     ----------
+9a64445a-6557-11e4-b410-001f290cf88c   tegdsf/dse          10.6.207.228/       name=dse-demo,replicationController=dse-demo   Running
+9a646fb6-6557-11e4-b410-001f290cf88c   tegdsf/dse          10.6.207.17/        name=dse-demo,replicationController=dse-demo   Running
+```
+
+通过docker ps也可以看到被Kubernetes启动的容器：
+```
+$ docker ps
+CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                      NAMES
+37fab78246e0        tegdsf/dse:latest         "/bin/sh -c /root/ds   3 minutes ago       Up 3 minutes                                   k8s_dse-demo.4314872b_9a646fb6-6557-11e4-b410-001f290cf88c.default.etcd_1415238765_7e8d8da7   
+8f91f09d6d4e        kubernetes-pause:latest   "/pause"               3 minutes ago       Up 3 minutes        0.0.0.0:19800->19800/tcp   k8s_net.40d9846a_9a646fb6-6557-11e4-b410-001f290cf88c.default.etcd_1415238765_751ba7fd       
+```
