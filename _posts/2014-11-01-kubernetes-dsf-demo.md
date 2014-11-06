@@ -171,4 +171,4 @@ CONTAINER ID        IMAGE                     COMMAND                CREATED    
 
 ####日志收集
 
-Docker容器的日志收集这块，业界已经有很多人在探索，目标都是将传统成熟的日志收集方案(比如，Logstash+ElasticSearch+Kibana)平滑地迁移到基于容器的平台系统。接下来，我们也将探索各种不同的方案，筛选出最合适自己的。
+Docker容器的日志收集这块，业界已经有很多人在探索，目标都是将传统成熟的日志收集方案(比如，Logstash + ElasticSearch +Kibana)平滑地迁移到基于容器的平台系统。接下来，我们也将探索各种不同的方案，筛选出最合适自己的。
