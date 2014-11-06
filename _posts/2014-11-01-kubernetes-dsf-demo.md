@@ -167,6 +167,7 @@ CONTAINER ID        IMAGE                     COMMAND                CREATED    
 
 ####服务发现
 
+当我们把服务通过Gaia或Kubernetes这样的系统来做调度和部署时，服务真正的运行机器是动态可变的，面临地问题是服务消费者如何及时地发现服务。
 
 
 ####日志收集
