@@ -66,24 +66,22 @@ slave(称作minion)运行两个组件：
 
 - 下载源代码自己编译:
 
-<pre><code class="bash">
-    git clone https://github.com/GoogleCloudPlatform/kubernetes.git
-    cd kubernetes/build
-    ./release.sh
+<pre><code class="bash">git clone https://github.com/GoogleCloudPlatform/kubernetes.git
+cd kubernetes/build
+./release.sh
 </code></pre>
 
 - 直接下载人家已经编译打包好的tar文件：
 
-    wget https://storage.googleapis.com/kubernetes/binaries.tar.gz
+<pre><code class="bash">wget https://storage.googleapis.com/kubernetes/binaries.tar.gz</code></pre>
 
 自己编译源码需要先安装好golang，编译完之后在kubernetes/_output/release-tars文件夹下可以得到打包文件。直接下载的方式不需要安装其他软件，但可能得不到最新的版本。
 
 第二步，我们还需要etcd的二进制可执行文件，通过如下方式获取：
 
-```bash
-wget https://github.com/coreos/etcd/releases/download/v0.4.6/etcd-v0.4.6-linux-amd64.tar.gz  
+<pre><code>wget https://github.com/coreos/etcd/releases/download/v0.4.6/etcd-v0.4.6-linux-amd64.tar.gz  
 tar xvf etcd-v0.4.6-linux-amd64.tar.gz  
-```
+</code></pre>
 
 第三步，就可以启动各个组件了：
 
