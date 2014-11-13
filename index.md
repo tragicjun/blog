@@ -1,7 +1,7 @@
 ---
 layout: page
 title: CodingBird's Blog
-tagline: A little bit everyday
+tagline: a little bit everyday
 ---
 {% include JB/setup %}
 
