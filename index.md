@@ -1,6 +1,6 @@
 ---
 layout: page
-title: TragicJun
+title: ZhangJun
 tagline: a little bit everyday
 ---
 {% include JB/setup %}
