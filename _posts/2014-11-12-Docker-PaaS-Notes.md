@@ -1,3 +1,11 @@
+---
+layout: post
+title: Flynn初探：基于Docker的PaaS平台
+published: true
+---
+
+##### 作者：[TragicJun](http://blog.csdn.net/zhangjun2915)
+
 从封装对象和用户工作流两个层面来理解。
 
 ##为什么需要Flynn
