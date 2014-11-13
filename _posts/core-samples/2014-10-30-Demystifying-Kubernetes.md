@@ -87,163 +87,137 @@ tar xvf etcd-v0.4.6-linux-amd64.tar.gz
 
 etcd
 
-```bash
-cd etcd-v0.4.6-linux-amd64  
-./etcd  
-```
+    cd etcd-v0.4.6-linux-amd64  
+    ./etcd  
 
 apiserver
 
-```bash
-./apiserver \  
--address=127.0.0.1 \  
--port=8080 \  
--portal_net="172.0.0.0/16" \  
--etcd_servers=http://127.0.0.1:4001 \  
--machines=127.0.0.1 \  
--v=3 \  
--logtostderr=false \  
--log_dir=./log 
-```
+    ./apiserver \  
+    -address=127.0.0.1 \  
+    -port=8080 \  
+    -portal_net="172.0.0.0/16" \  
+    -etcd_servers=http://127.0.0.1:4001 \  
+    -machines=127.0.0.1 \  
+    -v=3 \  
+    -logtostderr=false \  
+    -log_dir=./log 
 
 scheduler
 
-```bash
-./scheduler -master 127.0.0.1:8080 \  
--v=3 \  
--logtostderr=false \  
--log_dir=./log  
-```
+    ./scheduler -master 127.0.0.1:8080 \  
+    -v=3 \  
+    -logtostderr=false \  
+    -log_dir=./log  
 
 controller-manager
 
-```bash
-./controller-manager -master 127.0.0.1:8080 \
--v=3 \
--logtostderr=false \
--log_dir=./log
-```
+    ./controller-manager -master 127.0.0.1:8080 \
+    -v=3 \
+    -logtostderr=false \
+    -log_dir=./log
 
 kubelet
 
-```bash
-./kubelet \  
--address=127.0.0.1 \  
--port=10250 \  
--hostname_override=127.0.0.1 \  
--etcd_servers=http://127.0.0.1:4001 \  
--v=3 \  
--logtostderr=false \  
--log_dir=./log  
-```
+    ./kubelet \  
+    -address=127.0.0.1 \  
+    -port=10250 \  
+    -hostname_override=127.0.0.1 \  
+    -etcd_servers=http://127.0.0.1:4001 \  
+    -v=3 \  
+    -logtostderr=false \  
+    -log_dir=./log  
 
 proxy
 
-```bash
-./proxy \
--etcd_servers=http://127.0.0.1:4001 \
--v=3 \
--logtostderr=false \
--log_dir=./log
-```
+    ./proxy \
+    -etcd_servers=http://127.0.0.1:4001 \
+    -v=3 \
+    -logtostderr=false \
+    -log_dir=./log
 
 ####创建pod
 
 搭好了运行环境后，就可以提交pod了。首先编写pod描述文件，保存为redis.json：
 
-```json
-{  
-  "id": "redis",  
-  "desiredState": {  
-    "manifest": {  
-      "version": "v1beta1",  
+    {  
       "id": "redis",  
-      "containers": [{  
-        "name": "redis",  
-        "image": "dockerfile/redis",  
-        "imagePullPolicy": "PullIfNotPresent",  
-        "ports": [{  
-          "containerPort": 6379,  
-          "hostPort": 6379  
-        }]  
-      }]  
+      "desiredState": {  
+        "manifest": {  
+          "version": "v1beta1",  
+          "id": "redis",  
+          "containers": [{  
+            "name": "redis",  
+            "image": "dockerfile/redis",  
+            "imagePullPolicy": "PullIfNotPresent",  
+            "ports": [{  
+              "containerPort": 6379,  
+              "hostPort": 6379  
+            }]  
+          }]  
+        }  
+      },  
+      "labels": {  
+        "name": "redis"  
+      }  
     }  
-  },  
-  "labels": {  
-    "name": "redis"  
-  }  
-}  
-```
 
 然后，通过命令行工具kubecfg提交：
 
-```bash
-./kubecfg -c redis.json create /pods  
-```
+    ./kubecfg -c redis.json create /pods  
 
 提交完后，通过kubecfg查看pod状态：
 
-```text
-# ./kubecfg list /pods
-ID                  Image(s)            Host                Labels              Status
-----------          ----------          ----------          ----------          ----------
-redis               dockerfile/redis    127.0.0.1/          name=redis          Running
-```
+    # ./kubecfg list /pods
+    ID                  Image(s)            Host                Labels              Status
+    ----------          ----------          ----------          ----------          ----------
+    redis               dockerfile/redis    127.0.0.1/          name=redis          Running
 
 Status是Running表示pod已经在容器里运行起来了，可以用"docker ps"命令来查看容器信息:
 
-```text
-# docker ps
-CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                    NAMES
-ae83d1e4b1ec        dockerfile/redis:latest   "redis-server /etc/r   19 seconds ago      Up 19 seconds                                k8s_redis.caa18858_redis.default.etcd_1414684622_1b43fe35
-```
+    # docker ps
+    CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                    NAMES
+    ae83d1e4b1ec        dockerfile/redis:latest   "redis-server /etc/r   19 seconds ago      Up 19 seconds                                k8s_redis.caa18858_redis.default.etcd_1414684622_1b43fe35
 
 ####创建replicationController
 
-```json
-{
-    "id": "redisController",
-    "apiVersion": "v1beta1",
-    "kind": "ReplicationController",
-    "desiredState": {
-      "replicas": 1,
-      "replicaSelector": {"name": "redis"},
-      "podTemplate": {
+    {
+        "id": "redisController",
+        "apiVersion": "v1beta1",
+        "kind": "ReplicationController",
         "desiredState": {
-           "manifest": {
-             "version": "v1beta1",
-             "id": "redisController",
-             "containers": [{
-               "name": "redis",
-               "image": "dockerfile/redis",
-               "imagePullPolicy": "PullIfNotPresent",
-               "ports": [{
-                   "containerPort": 6379,
-                   "hostPort": 6379
-               }]
-             }]
-           }
-         },
-         "labels": {"name": "redis"}
-        }},
-    "labels": {"name": "redis"}
-  }
-```
+          "replicas": 1,
+          "replicaSelector": {"name": "redis"},
+          "podTemplate": {
+            "desiredState": {
+               "manifest": {
+                 "version": "v1beta1",
+                 "id": "redisController",
+                 "containers": [{
+                   "name": "redis",
+                   "image": "dockerfile/redis",
+                   "imagePullPolicy": "PullIfNotPresent",
+                   "ports": [{
+                       "containerPort": 6379,
+                       "hostPort": 6379
+                   }]
+                 }]
+               }
+             },
+             "labels": {"name": "redis"}
+            }},
+        "labels": {"name": "redis"}
+    }
 
 然后，通过命令行工具kubecfg提交：
 
-```bash
-./kubecfg -c redisController.json create /replicationControllers 
-```
+    ./kubecfg -c redisController.json create /replicationControllers 
 
 提交完后，通过kubecfg查看replicationController状态：
 
-```
-# ./kubecfg list /replicationControllers
-ID                  Image(s)            Selector            Replicas
-----------          ----------          ----------          ----------
-redisController     dockerfile/redis    name=redis          1
-```
+    # ./kubecfg list /replicationControllers
+    ID                  Image(s)            Selector            Replicas
+    ----------          ----------          ----------          ----------
+    redisController     dockerfile/redis    name=redis          1
 
 同时，1个pod也将被自动创建出来，即使我们故意删除该pod，replicationController也将保证创建1个新pod。
 
@@ -251,34 +225,28 @@ redisController     dockerfile/redis    name=redis          1
 
 首先编写service描述文件，保存为redisService.json：
 
-```json
-{
-  "kind": "Service",
-  "apiVersion": "v1beta1",
-  "id": "redis",
-  "port": 6379,
-  "labels": {
-     "name": "redis"
-  },
-  "selector": {
-     "name": "redis"
-  }
-}
-```
+    {
+      "kind": "Service",
+      "apiVersion": "v1beta1",
+      "id": "redis",
+      "port": 6379,
+      "labels": {
+         "name": "redis"
+      },
+      "selector": {
+         "name": "redis"
+      }
+    }
 
 然后，通过命令行工具kubecfg提交：
 
-```
-./kubecfg -c redisService.json create /services 
-```
+    ./kubecfg -c redisService.json create /services 
 
 提交完后，通过kubecfg查看service状态：
 
-```
-# kubecfg list /services
-ID                  Labels              Selector            IP                  Port
-----------          ----------          ----------          ----------          ----------
-redis               name=redis          name=redis          172.0.0.1           6379
-```
+    # kubecfg list /services
+    ID                  Labels              Selector            IP                  Port
+    ----------          ----------          ----------          ----------          ----------
+    redis               name=redis          name=redis          172.0.0.1           6379
 
 172.0.0.1:6379即是service的socket，在客户端pod中可以通过$REDIS_SERVICE_HOST:$REDIS_SERVICE_PORT环境变量来获取该地址。
