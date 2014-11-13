@@ -27,11 +27,10 @@ DSE启动后需要打开一个NIO服务器来接受调用请求，其监听的IP
 
 然而，假如DSE运行在docker容器里，这样的配置是无法生效的，因为容器看不到宿主机的网络接口。容器实际上被分配的是一个名为docker0的虚拟网络接口，其IP是从宿主机上随机选择的，通过桥接方式与宿主机互通。因此，方便起见直接将IP配置为0.0.0.0，port配置为19800。这个配置可以写死在文件中保持不变，不必因部署机器的改变而修改：
 
-<pre><code class="bash">#DSE Main TCP Host
-taserver.host=0.0.0.0
-#DSE Main TCP Port
-taserver.port=19800
-</code></pre>
+    #DSE Main TCP Host
+    taserver.host=0.0.0.0
+    #DSE Main TCP Port
+    taserver.port=19800
 
 **启动脚本**
 
@@ -51,42 +50,38 @@ DSF的另一个核心系统是软负载(详细介绍可以参考wiki链接http:/
 
 在对DSE进行简单的改造后，就可以来制作docker镜像了，首先是编写Dockerfile，内容如下：
 
-```text
-### tegdsf/centos在base centos镜像之上安装了jdk, maven及svn
-FROM tegdsf/centos
-### 通过svn获取服务引擎代码
-RUN svn checkout http://tc-svn.tencent.com/doss/doss_openapi_rep/openapi_proj/branches/commons/DSE/docker_1.0 /root/dse-docker
-### 通过maven编译打包
-RUN cd /root/dse-docker; mvn package
-### 将部署包拷贝到特定文件夹
-RUN rm /root/dse-docker/release/*.tar
-RUN mkdir /root/dse-latest
-RUN mv /root/dse-docker/release/dse-*/* /root/dse-latest/
-### 对启动/停止脚本设置可执行权限
-RUN chmod +x /root/dse-*/bin/start.sh
-RUN chmod +x /root/dse-*/bin/kill.sh
-RUN rm -r /root/dse-docker
-RUN rm -r /tmp/mavenRepository
-### 服务引擎默认监听19800端口
-EXPOSE 19800
-### start.sh是服务引擎的启动脚本
-ENTRYPOINT /root/dse-latest/bin/start.sh
-```
+    ### tegdsf/centos在base centos镜像之上安装了jdk, maven及svn
+    FROM tegdsf/centos
+    ### 通过svn获取服务引擎代码
+    RUN svn checkout http://tc-svn.tencent.com/doss/doss_openapi_rep/openapi_proj/branches/commons/DSE/docker_1.0 /root/dse-docker
+    ### 通过maven编译打包
+    RUN cd /root/dse-docker; mvn package
+    ### 将部署包拷贝到特定文件夹
+    RUN rm /root/dse-docker/release/*.tar
+    RUN mkdir /root/dse-latest
+    RUN mv /root/dse-docker/release/dse-*/* /root/dse-latest/
+    ### 对启动/停止脚本设置可执行权限
+    RUN chmod +x /root/dse-*/bin/start.sh
+    RUN chmod +x /root/dse-*/bin/kill.sh
+    RUN rm -r /root/dse-docker
+    RUN rm -r /tmp/mavenRepository
+    ### 服务引擎默认监听19800端口
+    EXPOSE 19800
+    ### start.sh是服务引擎的启动脚本
+    ENTRYPOINT /root/dse-latest/bin/start.sh
 
 然后通过docker build命令来构建：
-```bash
-docker build -t tegdsf/dse .
-```
+
+    docker build -t tegdsf/dse .
 
 最后，可以对构建好的镜像做简单的测试：
-```
-# docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse
-4c55f2081eac
-# curl localhost:19800/internal/heartbeat.jsp
-<html>
-Heartbeat Page.
-</html>
-```
+
+    # docker run -d -p 127.0.0.1:19800:19800 tegdsf/dse
+    4c55f2081eac
+    # curl localhost:19800/internal/heartbeat.jsp
+    <html>
+    Heartbeat Page.
+    </html>
 
 测试通过后，我们可以把镜像push到远程仓库，这里推荐数平gaia团队搭建的私有仓库docker.oa.com:8080(详细介绍参考链接http://km.oa.com/group/docker/articles/show/205373 )。
 
@@ -96,69 +91,62 @@ Heartbeat Page.
 
 首先，我们搭建了由两台机器组成的Kubernetes集群，一台机器既做master也做slave，通过命令行工具查看slave(称为minion)如下：
 
-```
-$ kubecfg -h 10.6.207.17 list /minions
-Minion identifier
-----------
-10.6.207.17
-10.6.207.228
-```
+    $ kubecfg -h 10.6.207.17 list /minions
+    Minion identifier
+    ----------
+    10.6.207.17
+    10.6.207.228
 
 接下来，我们通过Kubernetes的replicationController对象来部署多个服务实例，编写json描述文件如下：
 
-```json
-{
-  "id": "dse-demo",
-  "apiVersion": "v1beta1",
-  "kind": "ReplicationController",
-  "desiredState": {
-    "replicas": 2,
-    "replicaSelector": {"name": "dse-demo"},
-    "podTemplate": {
+    {
+      "id": "dse-demo",
+      "apiVersion": "v1beta1",
+      "kind": "ReplicationController",
       "desiredState": {
-         "manifest": {
-           "version": "v1beta1",
-           "id": "dse-demo",
-           "containers": [{
-             "name": "dse-demo",
-             "image": "tegdsf/dse",
-              "imagePullPolicy": "PullIfNotPresent",
-             "ports": [{"containerPort": 19800, "hostPort": 19800}]
-           }]
-         }
-       },
-       "labels": {"name": "dse-demo"}
-      }},
-  "labels": {"name": "dse-demo"}
-}
-```
+        "replicas": 2,
+        "replicaSelector": {"name": "dse-demo"},
+        "podTemplate": {
+          "desiredState": {
+             "manifest": {
+               "version": "v1beta1",
+               "id": "dse-demo",
+               "containers": [{
+                 "name": "dse-demo",
+                 "image": "tegdsf/dse",
+                  "imagePullPolicy": "PullIfNotPresent",
+                 "ports": [{"containerPort": 19800, "hostPort": 19800}]
+               }]
+             }
+           },
+           "labels": {"name": "dse-demo"}
+          }},
+      "labels": {"name": "dse-demo"}
+    }
 
 可以看到，通过"replicas"字段可以指定服务实例的个数。最后，用命令行工具提交描述文件：
 
-```
-$ kubecfg -h 10.6.207.17 -c dseController.json create /replicationControllers
-ID                  Image(s)            Selector            Replicas
-----------          ----------          ----------          ----------
-dse-demo            tegdsf/dse          name=dse-demo       2
-```
+    $ kubecfg -h 10.6.207.17 -c dseController.json create /replicationControllers
+    ID                  Image(s)            Selector            Replicas
+    ----------          ----------          ----------          ----------
+    dse-demo            tegdsf/dse          name=dse-demo       2
 
 可以看到2个实例已经部署成功，并处于"Running"状态：
 
-```
-$ kubecfg -h 10.6.207.17 list /pods
-ID                                     Image(s)            Host                Labels                                         Status
-----------                             ----------          ----------          ----------                                     ----------
-9a64445a-6557-11e4-b410-001f290cf88c   tegdsf/dse          10.6.207.228/       name=dse-demo,replicationController=dse-demo   Running
-9a646fb6-6557-11e4-b410-001f290cf88c   tegdsf/dse          10.6.207.17/        name=dse-demo,replicationController=dse-demo   Running
-```
+    $ kubecfg -h 10.6.207.17 list /pods
+    ID                                     Image(s)            Host                Labels                                         Status
+    ----------                             ----------          ----------          ----------                                     ----------
+    9a64445a-6557-11e4-b410-001f290cf88c   tegdsf/dse          10.6.207.228/       name=dse-demo,replicationController=dse-demo   Running
+    9a646fb6-6557-11e4-b410-001f290cf88c   tegdsf/dse          10.6.207.17/        name=dse-demo,replicationController=dse-demo   Running
 
 通过docker ps也可以看到被Kubernetes启动的容器：
-```
+
+<pre><code class="bash">
 $ docker ps
 CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                      NAMES
 37fab78246e0        tegdsf/dse:latest         "/bin/sh -c /root/ds   3 minutes ago       Up 3 minutes                                   k8s_dse-demo.4314872b_9a646fb6-6557-11e4-b410-001f290cf88c.default.etcd_1415238765_7e8d8da7   
 8f91f09d6d4e        kubernetes-pause:latest   "/pause"               3 minutes ago       Up 3 minutes        0.0.0.0:19800->19800/tcp   k8s_net.40d9846a_9a646fb6-6557-11e4-b410-001f290cf88c.default.etcd_1415238765_751ba7fd       
-```
+</code></pre>
 
 ###后续工作
 
