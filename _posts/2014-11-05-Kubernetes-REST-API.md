@@ -4,7 +4,7 @@ title: Kubernetes REST API
 published: true
 ---
 
-```json
+```javascript
 { 
     "kind": "PodList", 
     "creationTimestamp": null, 
