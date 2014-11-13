@@ -1,6 +1,6 @@
 ---
 layout: page
-title: CodingBird's Blog
+title: TragicJun
 tagline: a little bit everyday
 ---
 {% include JB/setup %}
