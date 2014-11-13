@@ -27,12 +27,11 @@ DSE启动后需要打开一个NIO服务器来接受调用请求，其监听的IP
 
 然而，假如DSE运行在docker容器里，这样的配置是无法生效的，因为容器看不到宿主机的网络接口。容器实际上被分配的是一个名为docker0的虚拟网络接口，其IP是从宿主机上随机选择的，通过桥接方式与宿主机互通。因此，方便起见直接将IP配置为0.0.0.0，port配置为19800。这个配置可以写死在文件中保持不变，不必因部署机器的改变而修改：
 
-```
-#DSE Main TCP Host
+<pre><code class="bash">#DSE Main TCP Host
 taserver.host=0.0.0.0
 #DSE Main TCP Port
 taserver.port=19800
-```
+</code></pre>
 
 **启动脚本**
 
