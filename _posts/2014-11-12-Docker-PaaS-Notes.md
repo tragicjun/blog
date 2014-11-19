@@ -70,7 +70,7 @@ published: true
 
 ###Layer 0
 
-- **Scheduler**: 资源调度器，定期从Layer 0获取Formation的更新，再根据每个Formation的部署配置生成一个个的Job，最后从集群中选择合适的机器去运行这些Job。
+- **Scheduler**: 资源调度器，定期从Layer 1获取Formation的更新，再根据每个Formation的部署配置生成一个个的Job，最后从集群中选择合适的机器去运行这些Job。
 
 - **Host Service**: 运行在集群每台机器上的agent，负责管控运行在本机的容器，并收集运行状态信息。
 
