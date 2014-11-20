@@ -69,3 +69,12 @@ Start command
 Start command
 
     docker run -d -P -e CONFIG_MODE=LOCAL  tegdsf/routercenter
+
+**Build Python HTTP File Server**
+
+    FROM centos
+    VOLUMN /root/files
+    WORKDIR /root/files
+    EXPOSE 8080
+    ENTRYPOINT python -m SimpleHTTPServer 8080
+
