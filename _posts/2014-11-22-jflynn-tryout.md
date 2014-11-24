@@ -30,5 +30,5 @@ published: true
     
 ###Start slugbuilder
 
-    cat slug-java-example.tar | docker run -i -v /root/flynn/buildpacks:/tmp/buildpacks -e HTTP_SERVER_URL=http://localhost:8000 -a stdin -a stdout -a stderr flynn/slugbuilder
+    cat slug-java-example.tar | docker run -i -v /root/flynn/buildpacks:/tmp/buildpacks -e HTTP_SERVER_URL=http://192.168.19.131:8000 -a stdin -a stdout -a stderr flynn/slugbuilder
     
