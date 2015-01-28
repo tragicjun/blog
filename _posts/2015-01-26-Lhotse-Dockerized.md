@@ -16,7 +16,7 @@ Lhotse是一个大数据任务调度系统，从架构上看是典型的Master-A
 
 ![Lhotse架构图](https://raw.githubusercontent.com/tragicjun/tragicjun.github.io/master/images/LhotseArch.png)
 
-到目前为止，Lhotse线上支持68种Runner，分别对应68种不同的任务类型，集群总机器数将近50台。面对这种复杂多样的系统环境，Lhotse接入Gaia云的核心诉求是*自动化*，通过自动化来提高运维效率。这体现在如下两个方面：
+到目前为止，Lhotse线上支持68种Runner，分别对应68种不同的任务类型，集群总机器数将近50台。面对这种复杂多样的系统环境，Lhotse接入Gaia云的核心诉求是**自动化**，通过自动化来提高运维效率。这体现在如下两个方面：
 
 1. 机器操作取代人工操作，将复杂枯燥的工作（比如资源分配、程序部署）交给云平台处理。
 
@@ -34,11 +34,25 @@ Lhotse部署遇到的最大难点在于，每个Runner类型所依赖的运行�
 
 ###自动调度
 
-假定我们已经将所有的Lhotse镜像都提交到了Registry，
+有了部署自动化，我们可以很方便地将Base/Runner发布到集群的任意机器。但接下来的问题是，选择哪台机器在什么时候运行哪个程序——这是调度要解决的问题。
 
-    - 机器资源管理麻烦，提高资源利用率，资源多租户共享
+以前，Lhotse集群的调度都是人工静态处理，资源分配粒度只能到机器级别。这导致调度工作量大，资源利用率却不高。如下两图分别展示了各个Runner机器的CPU与内存利用率：
+
+![Lhotse CPU利用率](https://raw.githubusercontent.com/tragicjun/tragicjun.github.io/master/images/LhotseCPUUsage.png)
+
+![Lhotse内存利用率](https://raw.githubusercontent.com/tragicjun/tragicjun.github.io/master/images/LhotseMemUsage.png)
+
+现在，得益于Gaia云强大的调度能力，Lhotse已经告别了人工资源分配的时代，完全达到调度自动化。Gaia调度主要带来两个方面的收益：
+
+1. 资源分配粒度细分到CPU与内存级别。Lhotse可以根据每个Runner的资源需求来设定具体的CPU个数、内存值。目前，Gaia正在规划支持磁盘、网络带宽等其他资源，实现更精细化的调度。
+
+2. 集群公平地与其他租户共享（租户可以是不同的系统，也可以是同一个系统内的不同模块）。目前，Lhotse与Hermes系统共享集群，在Gaia中通过树形队列来抽象租户层次，如下图所示，Lhotse租户与Hermes租户各自获得集群50%的资源，在Lhotse内部Base租户与Runner租户再按比例瓜分Lhotse的资源。这种多租户的资源调配，即实现了资源的合理利用，也保证了资源共享的公平性。
+
+![Lhotse资源池划分](https://raw.githubusercontent.com/tragicjun/tragicjun.github.io/master/images/LhotseQueueHierarchy.png)
     
 ###自动容错
+
+
     - 异常监测与迁移重试: 对比之前的手工脚本
 
 ###自动扩缩容
