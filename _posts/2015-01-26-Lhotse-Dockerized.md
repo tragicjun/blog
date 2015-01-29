@@ -80,15 +80,7 @@ TODO
 
 Gaia云为此采纳了基于“Etcd-Confd-HAProxy”的服务发现架构：Etcd作为服务地址的存储中心，HAProxy作为服务访问的代理中心，Confd则是连接前两者的纽带（具体实现可以参考[《服务注册与发现：腾讯Docker云V0.4版本发布》](http://km.oa.com/group/docker/articles/show/209851))。基于这种服务发现机制，Runner发现Base的过程如下图所示：
 
-```seq
-Base->Gaia: 部署
-Gaia->Etcd: 注册Base地址
-Confd->Etcd: 定期获取更新
-Confd->HAProxy: reload
-Runner->DNS: 域名解析HAProxy
-Runner->HAProxy: 访问Base端口
-HAProxy->Base: 转发请求
-```
+![Lhotse服务发现](https://raw.githubusercontent.com/tragicjun/tragicjun.github.io/master/images/LhotseServiceDiscovery.png)
 
 ###总结
 
