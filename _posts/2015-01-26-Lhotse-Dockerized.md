@@ -1,3 +1,9 @@
+---
+layout: post
+title: 全民拥抱Docker云--Lhotse系统经验分享
+published: true
+---
+
 ###前言
 “只要站在风口，猪也能飞起来”，这碗心灵鸡汤不知道激励了多少英雄豪杰踏上寻风口之路。而现如今，Docker这阵龙卷风呼啸来袭，更让众人生起迎风而上、直冲云霄的欲望。为了找到这风口，数据平台部开始全面拥抱Docker，基于多年的大数据集群管理经验，倾力打造DockerOnGaia云平台（简称[Gaia云](http://km.oa.com/group/docker/articles/show/207094)），并动员将数平自身的核心系统[Lhotse](http://km.oa.com/group/2430/articles/show/165306)、[Hermes](http://km.oa.com/group/597/articles/show/191455)、[Hive](http://km.oa.com/group/2430/articles/show/163736)、[TRC](http://km.oa.com/group/3292/articles/show/175686)、[TDBank](http://km.oa.com/group/3292/articles/show/176743)等全面接入Gaia云。
 
