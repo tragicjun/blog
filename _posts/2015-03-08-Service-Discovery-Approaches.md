@@ -33,6 +33,8 @@ various layers of caching in the DNS infrastructure
 
 1. different languages need different client library
 
+2. need to inject code to application
+
 
 
 
